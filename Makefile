@@ -71,6 +71,7 @@ sync-images: ## Sync image values from images.yaml into default-values.env
 validate-images: ## Validate that images.yaml and default-values.env are in sync
 	bash scripts/validate-images.sh
 
+
 .PHONY: validate-yaml
 validate-yaml:
 	yarn verify

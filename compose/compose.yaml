@@ -23,6 +23,8 @@ services:
       - ../lightspeed-core-configs/rhdh-profile.py:/app-root/rhdh-profile.py:Z
       - ../llama-stack-configs/config.yaml:/app-root/config.yaml:Z
       - ../rag-content:/rag-content:Z
+    environment:
+      - SERVICE_HOST=0.0.0.0
     env_file:
       - ../env/values.env
     healthcheck:

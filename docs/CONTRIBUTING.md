@@ -26,7 +26,9 @@
 make get-rag
 ```
 
-3. Start the local API stack:
+3. The production config (`lightspeed-stack.yaml`) sets `host: 127.0.0.1` so the service only binds to loopback — reachable exclusively by containers in the same Pod on Kubernetes. The compose file overrides this with `SERVICE_HOST=0.0.0.0` so the container port mapping works and you can reach the API at `localhost:8080` from your host.
+
+1. Start the local API stack:
 
 ```sh
 make local-up
