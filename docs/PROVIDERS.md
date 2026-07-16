@@ -69,6 +69,26 @@ You must pass the environment variable `OPENAI_API_KEY` to the Lightspeed Core c
 
 Get your API key from [platform.openai.com](https://platform.openai.com/settings/organization/api-keys).
 
+## Gemini
+
+There is no dedicated `gemini` provider type in Lightspeed Core's inference schema. Gemini exposes an OpenAI-compatible endpoint, so configure it as an `openai`-type provider with a custom `base_url` instead:
+
+```yaml
+inference:
+  providers:
+    - type: openai
+      id: <your-unique-id>
+      api_key_env: GEMINI_API_KEY
+      extra:
+        base_url: https://generativelanguage.googleapis.com/v1beta/openai/
+```
+
+You must pass the environment variable `GEMINI_API_KEY` to the Lightspeed Core container.
+
+Get your API key from [Google AI Studio](https://aistudio.google.com/apikey).
+
+This is the consumer Gemini API (`generativelanguage.googleapis.com`), authenticated with a simple API key. If you need enterprise features (VPC-SC, IAM, billing tied to a GCP project, etc.), use Vertex AI below instead.
+
 ## Vertex AI (Gemini)
 
 To add the `vertexai` inference provider, include the following in [lightspeed-stack.yaml](../lightspeed-core-configs/lightspeed-stack.yaml):
@@ -84,6 +104,16 @@ inference:
 ```
 
 Additionally, you need to ensure your Google Application Credentials are mounted to the Lightspeed Core container and the `GOOGLE_APPLICATION_CREDENTIALS` environment variable is the path to the mount location.
+
+To set this up with the provided `compose/compose.yaml`, set `GOOGLE_APPLICATION_CREDENTIALS_HOST_PATH` to the path on your host machine of a GCP service account JSON key (or your `gcloud auth application-default login` credentials file). The compose file mounts that file into the container and points `GOOGLE_APPLICATION_CREDENTIALS` at the mounted path for you — do not set `GOOGLE_APPLICATION_CREDENTIALS` to a host path yourself, since that path won't exist inside the container.
+
+```env
+VERTEX_AI_PROJECT=
+VERTEX_AI_LOCATION=
+GOOGLE_APPLICATION_CREDENTIALS_HOST_PATH=<path-on-your-host-to-a-gcp-service-account-json-key>
+```
+
+The service account (or `gcloud auth application-default login` credentials) needs the `Vertex AI User` role, and the Vertex AI API must be enabled on `VERTEX_AI_PROJECT`.
 
 Provider details: [Llama Stack (OGX) Vertex AI docs](https://ogx-ai.github.io/docs/providers/inference/remote_vertexai).
 
