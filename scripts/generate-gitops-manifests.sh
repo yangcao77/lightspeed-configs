@@ -89,6 +89,9 @@ HEADER
         print "      extra:"
         print "        project: ${env.VERTEX_AI_PROJECT:=}"
         print "        location: ${env.VERTEX_AI_LOCATION:=global}"
+        print "        allowed_models:"
+        print "          - publishers/google/models/gemini-2.5-pro"
+        print "          - publishers/google/models/gemini-2.5-flash-lite"
         print
         next
       }
