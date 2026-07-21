@@ -92,6 +92,8 @@ HEADER
         print "        allowed_models:"
         print "          - publishers/google/models/gemini-2.5-pro"
         print "          - publishers/google/models/gemini-2.5-flash-lite"
+        print "          - publishers/google/models/gemini-3.1-pro-preview"
+        print "          - publishers/google/models/gemini-3.5-flash-lite"
         print
         next
       }
