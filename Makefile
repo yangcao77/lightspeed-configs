@@ -30,6 +30,12 @@ LIGHTSPEED_STACK_CONFIG := lightspeed-core-configs/lightspeed-stack.local.yaml
 endif
 export LIGHTSPEED_STACK_CONFIG
 
+LLAMA_STACK_CONFIG := llama-stack-configs/config.yaml
+ifneq ($(wildcard llama-stack-configs/config.local.yaml),)
+LLAMA_STACK_CONFIG := llama-stack-configs/config.local.yaml
+endif
+export LLAMA_STACK_CONFIG
+
 .PHONY: default
 default: help
 

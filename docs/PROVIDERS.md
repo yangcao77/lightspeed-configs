@@ -11,6 +11,9 @@ Each inference has its own environment variables. You can include all of these i
 > 
 > You will notice the `api_key_env` field is not wrapped in curly-braces `{}`. This is due to Lightspeed Core wrapping them internally to curate a proper `{env.xyz}` to pass through to Llama Stack so the keys are not exposed internally.
 
+> [!NOTE]
+> `vllm`, `openai`, `vertexai`, and `gemini` are only added for the GitOps/production deployment, injected by [scripts/generate-gitops-manifests.sh](../scripts/generate-gitops-manifests.sh) — they're intentionally absent from the git-tracked `lightspeed-stack.yaml`/`config.yaml`. To test any of these providers locally, add them to `lightspeed-core-configs/lightspeed-stack.local.yaml` / `llama-stack-configs/config.local.yaml` instead (gitignored, auto-mounted by `make local-up` when present — see [CONTRIBUTING.md](./CONTRIBUTING.md)). If you need a provider added to the deployed environment too, update the script's injection logic accordingly.
+
 ## vLLM
 
 To add the `vLLM` inference provider, include the following in [lightspeed-stack.yaml](../lightspeed-core-configs/lightspeed-stack.yaml):
@@ -71,17 +74,18 @@ Get your API key from [platform.openai.com](https://platform.openai.com/settings
 
 ## Gemini
 
-There is no dedicated `gemini` provider type in Lightspeed Core's inference schema. Gemini exposes an OpenAI-compatible endpoint, so configure it as an `openai`-type provider with a custom `base_url` instead:
+There is no dedicated `gemini` provider type in Lightspeed Core's high-level `inference.providers` schema (`lightspeed-stack.yaml`). It's added as a raw Llama Stack provider in the `providers.inference` list of `config.yaml` instead:
 
 ```yaml
-inference:
-  providers:
-    - type: openai
-      id: <your-unique-id>
-      api_key_env: GEMINI_API_KEY
-      extra:
-        base_url: https://generativelanguage.googleapis.com/v1beta/openai/
+providers:
+  inference:
+    - provider_id: gemini
+      provider_type: remote::gemini
+      config:
+        api_key: ${env.GEMINI_API_KEY:=}
 ```
+
+For local testing, add this to `llama-stack-configs/config.local.yaml` (see the note above). To add it to the GitOps/production deployment, add the same block to the injection logic in [generate-gitops-manifests.sh](../scripts/generate-gitops-manifests.sh).
 
 You must pass the environment variable `GEMINI_API_KEY` to the Lightspeed Core container.
 
@@ -91,7 +95,7 @@ This is the consumer Gemini API (`generativelanguage.googleapis.com`), authentic
 
 ## Vertex AI (Gemini)
 
-To add the `vertexai` inference provider, include the following in [lightspeed-stack.yaml](../lightspeed-core-configs/lightspeed-stack.yaml):
+To add the `vertexai` inference provider, include the following in `lightspeed-stack.yaml` (for local testing, use `lightspeed-core-configs/lightspeed-stack.local.yaml`; for the GitOps/production deployment, add it to the injection logic in [generate-gitops-manifests.sh](../scripts/generate-gitops-manifests.sh) instead — see the note above):
 
 ```yaml
 inference:

@@ -50,6 +50,16 @@ data:
   config.yaml: |
 HEADER
   strip_license "${REPO_ROOT}/llama-stack-configs/config.yaml" \
+    | awk '/^providers:$/ {
+        print
+        print "  inference:"
+        print "    - provider_id: gemini"
+        print "      provider_type: remote::gemini"
+        print "      config:"
+        print "        api_key: ${env.GEMINI_API_KEY:=}"
+        next
+      }
+      { print }' \
     | indent
 } > "${OUTPUT_DIR}/llama-stack-config.yaml"
 
@@ -84,6 +94,11 @@ HEADER
         print "          - gpt-5.1"
         print "          - gpt-4.1-mini"
         print "          - gpt-4.1-nano"
+        print "    - type: vertexai"
+        print "      id: vertexai"
+        print "      extra:"
+        print "        project: ${env.VERTEX_AI_PROJECT:=}"
+        print "        location: ${env.VERTEX_AI_LOCATION:=global}"
         print
         next
       }
