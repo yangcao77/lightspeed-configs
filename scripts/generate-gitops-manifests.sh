@@ -50,16 +50,6 @@ data:
   config.yaml: |
 HEADER
   strip_license "${REPO_ROOT}/llama-stack-configs/config.yaml" \
-    | awk '/^providers:$/ {
-        print
-        print "  inference:"
-        print "    - provider_id: gemini"
-        print "      provider_type: remote::gemini"
-        print "      config:"
-        print "        api_key: ${env.GEMINI_API_KEY:=}"
-        next
-      }
-      { print }' \
     | indent
 } > "${OUTPUT_DIR}/llama-stack-config.yaml"
 
